@@ -78,6 +78,14 @@ class SimditorMarkdown extends Simditor.Button
     text = @textarea.val()
     markdownText = marked(text)
 
+    # to-markdown needs `align="center"` property
+    # instead of `text-align: center` style
+    # here we match <th|td style="text-align:center">
+    # and replace it to <th|td style="text-align:center" align="center">
+    markdownText = markdownText.replace ///
+      (<(?:th|td)\s+[^>]*style="[^"]*text-align:\s*(\w+)[^"]*"[^>]*)(>)
+    ///g, '$1 align="$2"$3'
+
     @editor.textarea.val markdownText
     @editor.body.html markdownText
 
