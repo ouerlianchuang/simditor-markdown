@@ -69,7 +69,7 @@ Simditor 是团队协作工具 [Tower](http://tower.im) 使用的富文本编辑
 
     button.textarea.val '```\nvar test = 1;\n```'
     button._convert()
-    expect(editor.getValue()).toBe('<pre><code>var test = 1;\n</code></pre>')
+    expect(editor.getValue()).toBe('<pre><code>var test = 1;</code></pre>')
 
     button.textarea.val '|123|456|789|\n|---|---|---|\n|987|654|321|'
     button._convert()

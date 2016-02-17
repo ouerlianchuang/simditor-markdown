@@ -89,6 +89,14 @@ class SimditorMarkdown extends Simditor.Button
     text = @textarea.val()
     markdownText = marked(text)
 
+    # Because marked output code blocks to
+    # \n</code></pre> style which causes
+    # to-markdown transform HTML text to markdown
+    # with an unexpected \n
+    markdownText = markdownText.replace ///
+      \n</code></pre>
+    ///g, '</code></pre>'
+
     # to-markdown needs `align="center"` property
     # instead of `text-align: center` style
     # here we match <th|td style="text-align:center">
