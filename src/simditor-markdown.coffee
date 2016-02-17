@@ -16,6 +16,13 @@ class SimditorMarkdown extends Simditor.Button
       .attr('placeholder', @editor.opts.placeholder)
       .appendTo @markdownEl
 
+    # Let simditor allow table align, I think it is better to hack this in our plugin
+    # rather than simditor itself.
+    @editor.formatter._allowedAttributes = $.extend
+      th: ['align']
+      td: ['align']
+    , @editor.formatter._allowedAttributes
+
     @textarea.on 'focus', (e) =>
       @editor.el.addClass('focus')
     .on 'blur', (e) =>
