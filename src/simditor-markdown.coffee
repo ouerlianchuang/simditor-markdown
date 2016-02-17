@@ -23,6 +23,10 @@ class SimditorMarkdown extends Simditor.Button
       td: ['align']
     , @editor.formatter._allowedAttributes
 
+    # Allow <em> element because to-markdown use <em> to show italic
+    @editor.formatter._allowedTags = $.merge ['em'],
+      @editor.formatter._allowedTags
+
     @textarea.on 'focus', (e) =>
       @editor.el.addClass('focus')
     .on 'blur', (e) =>
