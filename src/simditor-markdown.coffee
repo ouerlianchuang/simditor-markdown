@@ -39,7 +39,7 @@ class SimditorMarkdown extends Simditor.Button
     @markdownChange = @editor.util.throttle =>
       @_autosizeTextarea()
       @_convert()
-      @editor.trigger 'valuechanged'
+      @editor.trigger 'simditor-markdown-valuechanged'
     , 200
 
     if @editor.util.support.oninput

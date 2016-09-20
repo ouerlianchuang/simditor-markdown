@@ -65,7 +65,7 @@ Simditor 是团队协作工具 [Tower](http://tower.im) 使用的富文本编辑
 
     button.textarea.val '[Tower](http://tower.im)'
     button._convert()
-    expect(editor.getValue()).toBe('<p><a href="http://tower.im">Tower</a></p>')
+    expect(editor.getValue()).toBe('<p><a href="http://tower.im" target="_blank">Tower</a></p>')
 
     button.textarea.val '```\nvar test = 1;\n```'
     button._convert()
