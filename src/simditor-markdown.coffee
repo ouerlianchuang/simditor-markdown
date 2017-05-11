@@ -1,4 +1,3 @@
-
 class SimditorMarkdown extends Simditor.Button
 
   name: 'markdown'
@@ -26,6 +25,18 @@ class SimditorMarkdown extends Simditor.Button
     # Allow <em> element because to-markdown use <em> to show italic
     @editor.formatter._allowedTags = $.merge ['em'],
       @editor.formatter._allowedTags
+
+    # Customize <pre> tag to solve code language problem
+    @converters = [
+      {
+        filter: (node) ->
+          return node.nodeName is 'PRE' and node.children[0].nodeName is 'CODE'
+        replacement: (content, node) ->
+          codes = node.children[0].innerHTML
+          codeLang = node.children[0].className.substring(5)
+          return "```#{codeLang}\n" + codes + '\n```\n'
+      }
+    ]
 
     @textarea.on 'focus', (e) =>
       @editor.el.addClass('focus')
@@ -80,7 +91,7 @@ class SimditorMarkdown extends Simditor.Button
 
   _initMarkdownValue: ->
     @_fileterUnsupportedTags()
-    @textarea.val toMarkdown(@editor.getValue(), gfm: true)
+    @textarea.val toMarkdown(@editor.getValue(), {gfm: true, converters: @converters})
     @_autosizeTextarea()
 
   _autosizeTextarea: ->
