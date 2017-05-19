@@ -30,7 +30,7 @@ class SimditorMarkdown extends Simditor.Button
     @converters = [
       {
         filter: (node) ->
-          return node.nodeName is 'PRE' and node.children[0].nodeName is 'CODE'
+          return node.nodeName is 'PRE' and node.children.length is 1 and node.children[0].nodeName is 'CODE'
         replacement: (content, node) ->
           codes = node.children[0].innerHTML
           codeLang = node.children[0].className.substring(5)
