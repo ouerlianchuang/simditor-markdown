@@ -32,7 +32,7 @@ class SimditorMarkdown extends Simditor.Button
         filter: (node) ->
           return node.nodeName is 'PRE' and node.children.length is 1 and node.children[0].nodeName is 'CODE'
         replacement: (content, node) ->
-          codes = node.children[0].innerHTML
+          codes = content.match(/<code class="lang-\S+">([\S\s]*)<\/code>/)[1]
           codeLang = node.children[0].className.substring(5)
           return "```#{codeLang}\n" + codes + '\n```\n'
       }
