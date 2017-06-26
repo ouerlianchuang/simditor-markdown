@@ -1,4 +1,3 @@
-
 class SimditorMarkdown extends Simditor.Button
 
   name: 'markdown'
@@ -23,6 +22,22 @@ class SimditorMarkdown extends Simditor.Button
       td: ['align']
     , @editor.formatter._allowedAttributes
 
+    # Allow <em> element because to-markdown use <em> to show italic
+    @editor.formatter._allowedTags = $.merge ['em'],
+      @editor.formatter._allowedTags
+
+    # Customize <pre> tag to solve code language problem
+    @converters = [
+      {
+        filter: (node) ->
+          return node.nodeName is 'PRE' and node.children.length is 1 and node.children[0].nodeName is 'CODE'
+        replacement: (content, node) ->
+          codes = content.match(/<code class="lang-\S+">([\S\s]*)<\/code>/)[1]
+          codeLang = node.children[0].className.substring(5)
+          return "```#{codeLang}\n" + codes + '\n```\n'
+      }
+    ]
+
     @textarea.on 'focus', (e) =>
       @editor.el.addClass('focus')
     .on 'blur', (e) =>
@@ -35,6 +50,8 @@ class SimditorMarkdown extends Simditor.Button
     @markdownChange = @editor.util.throttle =>
       @_autosizeTextarea()
       @_convert()
+      @editor._placeholder()
+      @editor.trigger 'simditor-markdown-valuechanged'
     , 200
 
     if @editor.util.support.oninput
@@ -74,7 +91,7 @@ class SimditorMarkdown extends Simditor.Button
 
   _initMarkdownValue: ->
     @_fileterUnsupportedTags()
-    @textarea.val toMarkdown(@editor.getValue(), gfm: true)
+    @textarea.val toMarkdown(@editor.getValue(), {gfm: true, converters: @converters})
     @_autosizeTextarea()
 
   _autosizeTextarea: ->
@@ -84,6 +101,14 @@ class SimditorMarkdown extends Simditor.Button
   _convert: ->
     text = @textarea.val()
     markdownText = marked(text)
+
+    # Because marked output code blocks to
+    # \n</code></pre> style which causes
+    # to-markdown transform HTML text to markdown
+    # with an unexpected \n
+    markdownText = markdownText.replace ///
+      \n</code></pre>
+    ///g, '</code></pre>'
 
     # to-markdown needs `align="center"` property
     # instead of `text-align: center` style
